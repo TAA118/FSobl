@@ -2,8 +2,11 @@ import * as librosService from "../services/libros.service.v1.js";
 
 const obtenerLibros = async (req, res) => {
     try {
-        const libros = await librosService.obtenerLibros();
-        res.status(200).json(libros);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        const resultado = await librosService.obtenerLibros(page, limit);
+        res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
     }

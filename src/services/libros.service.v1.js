@@ -3,9 +3,21 @@ import { LibroNoEncontradoError } from "../errors/LibroNoEncontradoError.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cloudinary from "cloudinary";
 
-const obtenerLibros = async () => {
+const obtenerLibros = async (page = 1, limit = 10) => {
     try {
-        return await Libro.find();
+        const skip = (page - 1) * limit;
+        const total = await Libro.countDocuments();
+        const libros = await Libro.find()
+            .skip(skip)
+            .limit(limit);
+        
+        return {
+            libros,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
     } catch (e) {
         console.log("error al obtener libros", e);
         throw e;
