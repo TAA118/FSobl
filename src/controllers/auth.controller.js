@@ -31,4 +31,14 @@ const cambiarPlan = async (req, res) => {
     }
 };
 
-export { login, registrar, cambiarPlan }
+const logout = async (req, res) => {
+    try {
+        // En JWT sin estado del servidor, el logout se confirma simplemente
+        // El cliente debe descartar el token
+        res.status(200).json({ message: "Sesión cerrada correctamente" });
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
+};
+
+export { login, registrar, cambiarPlan, logout }
