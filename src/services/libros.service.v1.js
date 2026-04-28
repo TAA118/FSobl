@@ -1,5 +1,5 @@
 import { Libro } from "../modelos/libro.model.js";
-import { NotaNoEncontradaError } from "../errors/NotaNoEncontradaError.js";
+import { LibroNoEncontradoError } from "../errors/LibroNoEncontradoError.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cloudinary from "cloudinary";
 
@@ -35,7 +35,7 @@ const obtenerLibroPorId = async (idLibro) => {
     if (libro) {
         return libro;
     }
-    throw new NotaNoEncontradaError();
+    throw new LibroNoEncontradoError();
 };
 
 const crearLibro = async ({ titulo, genero, autor, fecha, imagenURL, sinopsis }) => {
@@ -73,13 +73,13 @@ const modificarLibroPorId = async (idLibro, body) => {
         return libroModificado;
     }
 
-    throw new NotaNoEncontradaError();
+    throw new LibroNoEncontradoError();
 };
 
 const eliminarLibroPorId = async (idLibro) => {
     const libro = await Libro.findOneAndDelete({ _id: idLibro });
     if (!libro) {
-        throw new NotaNoEncontradaError();
+        throw new LibroNoEncontradoError();
     }
 };
 
@@ -92,7 +92,7 @@ cloudinary.config({
 const subirImagen = async (idLibro, img) => {
     const libro = await Libro.findOne({ _id: idLibro });
     if (!libro) {
-        throw new NotaNoEncontradaError();
+        throw new LibroNoEncontradoError();
     }
 
     const imgBase64 = Buffer.from(img.buffer).toString('base64');

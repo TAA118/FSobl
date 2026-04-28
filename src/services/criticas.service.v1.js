@@ -1,5 +1,6 @@
 import { Critica } from "../modelos/critica.model.js";
-import { NotaNoEncontradaError } from "../errors/NotaNoEncontradaError.js";
+import { CriticaNoEncontradaError } from "../errors/CriticaNoEncontradaError.js";
+import { ValidationError } from "../errors/ValidationError.js";
 import { Usuario } from "../modelos/user.model.js";
 
 const obtenerCriticasUsuario = async (idUsuario) => {
@@ -33,19 +34,19 @@ const obtenerCriticaPorId = async (idCritica, idUsuario) => {
     if (critica) {
         return critica;
     }
-    throw new NotaNoEncontradaError();
+    throw new CriticaNoEncontradaError();
 };
 
 const crearCritica = async ({ puntaje, comentario, idLibro }, idUsuario) => {
     const usuario = await Usuario.findById(idUsuario);
     if (!usuario) {
-        throw new Error("Usuario no encontrado");
+        throw new ValidationError("Usuario no encontrado");
     }
 
     if (usuario.plan === "plus") {
         const cantidadCriticas = await Critica.countDocuments({ idUsuario: idUsuario });
         if (cantidadCriticas >= 4) {
-            throw new Error("No puedes crear más de 4 críticas con el plan plus. Actualiza a premium para crear más.");
+            throw new ValidationError("No puedes crear más de 4 críticas con el plan plus. Actualiza a premium para crear más.");
         }
     }
 
@@ -70,13 +71,13 @@ const modificarCriticaPorId = async (idCritica, body, idUsuario) => {
         return criticaModificada;
     }
 
-    throw new NotaNoEncontradaError();
+    throw new CriticaNoEncontradaError();
 };
 
 const eliminarCriticaPorId = async (idCritica, idUsuario) => {
     const critica = await Critica.findOneAndDelete({ _id: idCritica, idUsuario: idUsuario });
     if (!critica) {
-        throw new NotaNoEncontradaError();
+        throw new CriticaNoEncontradaError();
     }
 };
 

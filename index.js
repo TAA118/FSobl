@@ -1,7 +1,6 @@
 import express from 'express'
 import 'dotenv/config'
 import { pingRouter } from './src/routes/ping.router.js';
-import { notasRouterV1 } from './src/routes/notas.router.v1.js';
 import { librosRouterV1 } from './src/routes/libros.router.v1.js';
 import { criticasRouterV1 } from './src/routes/criticas.router.v1.js';
 import { generosRouterV1 } from './src/routes/generos.router.v1.js';
@@ -24,7 +23,6 @@ app.use("/v1", eventbriteRouter)
 
 //Rutas privadas
 app.use(authMiddleware)
-app.use("/v1", notasRouterV1)
 app.use("/v1", librosRouterV1)
 app.use("/v1", criticasRouterV1)
 app.use("/v1", generosRouterV1)
