@@ -23,4 +23,37 @@ const crearGenero = async ({ nombre }) => {
     }
 };
 
-export { obtenerGeneros, crearGenero };
+const modificarGeneroPorId = async (idGenero, { nombre }) => {
+    try {
+        const generoModificado = await Genero.findByIdAndUpdate(
+            idGenero,
+            { nombre },
+            { returnDocument: "after", runValidators: true }
+        );
+        if (!generoModificado) {
+            throw new Error("Género no encontrado");
+        }
+        return generoModificado;
+    } catch (e) {
+        console.log("error al modificar género", e);
+        if (e.code === 11000) {
+            throw new Error("El género ya existe");
+        }
+        throw new Error(e.message);
+    }
+};
+
+const eliminarGeneroPorId = async (idGenero) => {
+    try {
+        const generoEliminado = await Genero.findByIdAndDelete(idGenero);
+        if (!generoEliminado) {
+            throw new Error("Género no encontrado");
+        }
+        return generoEliminado;
+    } catch (e) {
+        console.log("error al eliminar género", e);
+        throw new Error(e.message);
+    }
+};
+
+export { obtenerGeneros, crearGenero, modificarGeneroPorId, eliminarGeneroPorId };
