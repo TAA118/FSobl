@@ -3,7 +3,7 @@ import { obtenerLibros, obtenerLibroPorId, crearLibro, modificarLibro, eliminarL
 import multer from 'multer';
 
 const librosRouterV1 = express.Router();
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ storage: multer.memoryStorage() });
 
 librosRouterV1.get("/libros", obtenerLibros);
 librosRouterV1.get("/libros/:id", obtenerLibroPorId);
