@@ -2,8 +2,11 @@ import * as criticasService from "../services/criticas.service.v1.js";
 
 const obtenerCriticasUsuario = async (req, res) => {
     try {
-        const criticas = await criticasService.obtenerCriticasUsuario(req.idUsu);
-        res.status(200).json(criticas);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        const resultado = await criticasService.obtenerCriticasUsuario(req.idUsu, page, limit);
+        res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
@@ -12,9 +15,11 @@ const obtenerCriticasUsuario = async (req, res) => {
 const obtenerCriticasLibro = async (req, res) => {
     try {
         const idLibro = req.params.idLibro;
-        const {limit, page} = req.query;
-        const criticas = await criticasService.obtenerCriticasLibro(idLibro, page, limit);
-        res.status(200).json(criticas);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        
+        const resultado = await criticasService.obtenerCriticasLibro(idLibro, page, limit);
+        res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
     }

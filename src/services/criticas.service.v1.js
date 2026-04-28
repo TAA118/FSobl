@@ -3,26 +3,37 @@ import { CriticaNoEncontradaError } from "../errors/CriticaNoEncontradaError.js"
 import { ValidationError } from "../errors/ValidationError.js";
 import { Usuario } from "../modelos/user.model.js";
 
-const obtenerCriticasUsuario = async (idUsuario) => {
+const obtenerCriticasUsuario = async (idUsuario, page = 1, limit = 10) => {
     try {
-        return await Critica.find({ idUsuario: idUsuario }).populate("idLibro");
+        const skip = (page - 1) * limit;
+        const total = await Critica.countDocuments({ idUsuario: idUsuario });
+        const criticas = await Critica.find({ idUsuario: idUsuario })
+            .populate("idLibro")
+            .skip(skip)
+            .limit(limit);
+        
+        return {
+            criticas,
+            total,
+            page,
+            limit,
+            totalPages: Math.ceil(total / limit)
+        };
     } catch (e) {
         console.log("error al obtener críticas del usuario", e);
         throw new Error("error obteniendo las críticas del usuario");
     }
 };
 
-const obtenerCriticasLibro = async (idLibro) => {
+const obtenerCriticasLibro = async (idLibro, page = 1, limit = 10) => {
     const total = await Critica.countDocuments({ idLibro: idLibro });
-    const page = Number(page);
-    const limit = Number(limit);
     const skip = (page - 1) * limit;
     try {
         const criticas = await Critica.find({ idLibro: idLibro }).populate("idUsuario", "nombreUsuario nombre apellido")
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit);
-        return { total, criticas, page, limit, totalPages: Math.ceil(total / limit) };
+        return { criticas, total, page, limit, totalPages: Math.ceil(total / limit) };
     } catch (e) {
         console.log("error al obtener críticas del libro", e);
         throw new Error("error obteniendo las críticas del libro");
