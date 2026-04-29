@@ -7,14 +7,14 @@ const headers = {
 
 export const obtenerEventos = async () => {
     try {
+        const params = new URLSearchParams({
+            'sort_by': 'date',
+            'start_date.keyword': 'this_month'
+        });
+
         const response = await fetch(
-            `https://www.eventbriteapi.com/v3/events/search/`,
-            { 
-                headers: {
-                    'Authorization': `Bearer ${EVENTBRITE_CONFIG.API_KEY}`,
-                    'Content-Type': 'application/json'
-                }
-            }
+            `https://www.eventbriteapi.com/v3/events/search/?${params.toString()}`,
+            { headers }
         );
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
