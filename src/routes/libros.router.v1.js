@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 librosRouterV1.get("/libros", obtenerLibros);
 librosRouterV1.get("/libros/:id", obtenerLibroPorId);
 librosRouterV1.post("/libros", crearLibro);
-librosRouterV1.put("/libros/:id", modificarLibro);
+librosRouterV1.put("/libros/:id", upload.single('imagen'), modificarLibro);
 librosRouterV1.delete("/libros/:id", eliminarLibro);
 librosRouterV1.post("/libros/:id/imagen", upload.single('imagen'), subirImagen);
 

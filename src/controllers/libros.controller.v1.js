@@ -37,9 +37,21 @@ const crearLibro = async (req, res) => {
 const modificarLibro = async (req, res) => {
     const idLibro = req.params.id;
     const body = req.body;
+    const img = req.file;
 
     try {
-        const libroModificado = await librosService.modificarLibroPorId(idLibro, body);
+        let libroModificado = await librosService.modificarLibroPorId(idLibro, body);
+        
+        // Si se proporciona una imagen, subirla
+        if (img) {
+            if (!img.mimetype.startsWith("image/")) {
+                return res.status(400).json({ message: "El archivo proporcionado no es una imagen" });
+            }
+            await librosService.subirImagen(idLibro, img);
+            // Obtener el libro actualizado con la imagen
+            libroModificado = await librosService.obtenerLibroPorId(idLibro);
+        }
+        
         res.status(200).json(libroDTO(libroModificado));
     } catch (e) {
         res.status(e.code || 500).json({ message: e.message });
