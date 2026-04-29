@@ -18,14 +18,7 @@ export const obtenerEventoPorId = async (req, res) => {
     }
 };
 
-export const crearEvento = async (req, res) => {
-    try {
-        const nuevoEvento = await eventbriteService.crearEvento(req.body);
-        res.status(201).json({ ok: true, evento: nuevoEvento });
-    } catch (error) {
-        res.status(400).json({ ok: false, error: error.message });
-    }
-};
+
 
 export const obtenerEventosPorCiudad = async (req, res) => {
     try {
