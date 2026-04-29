@@ -1,34 +1,30 @@
-import { EVENTBRITE_CONFIG } from '../config/eventbrite_config.js';
-
-const headers = {
-    'Authorization': `Bearer ${EVENTBRITE_CONFIG.API_KEY}`,
-    'Content-Type': 'application/json'
-};
+import { TICKETMASTER_CONFIG } from '../config/eventbrite_config.js';
 
 export const obtenerEventosPorCiudad = async (ciudad) => {
     try {
         const params = new URLSearchParams({
-            'q': ciudad,
-            'sort_by': 'date',
-            'token': EVENTBRITE_CONFIG.API_KEY
+            'keyword': ciudad,
+            'city': ciudad,
+            'apikey': TICKETMASTER_CONFIG.API_KEY,
+            'sort': 'date,asc'
         });
 
         const response = await fetch(
-            `${EVENTBRITE_CONFIG.BASE_URL}/events/search/?${params.toString()}`
+            `${TICKETMASTER_CONFIG.BASE_URL}/events.json?${params.toString()}`
         );
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
 
-        const eventos = data.events?.map(event => ({
+        const eventos = data._embedded?.events?.map(event => ({
             id: event.id,
-            nombre: event.name?.text,
-            descripcion: event.description?.text?.substring(0, 200),
-            fecha_inicio: event.start?.utc,
-            fecha_fin: event.end?.utc,
+            nombre: event.name,
+            descripcion: event.description || 'Sin descripción',
+            fecha_inicio: event.dates?.start?.dateTime,
             url: event.url,
-            imagen: event.logo?.url,
-            ciudad: event.venue?.address?.city || ciudad
+            imagen: event.images?.[0]?.url,
+            ciudad: ciudad,
+            venue: event._embedded?.venues?.[0]?.name
         })) || [];
 
         const hoy = new Date();
@@ -42,5 +38,6 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
     } catch (error) {
         throw new Error(`Error buscando eventos en ${ciudad}: ${error.message}`);
     }
+};
 };
 

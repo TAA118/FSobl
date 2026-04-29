@@ -1,5 +1,4 @@
-export const EVENTBRITE_CONFIG = {
-    BASE_URL: 'https://www.eventbriteapi.com/v3',
-    API_KEY: process.env.EVENTBRITE_API_KEY,
-    ORGANIZATION_ID: process.env.EVENTBRITE_ORG_ID
-}
+export const TICKETMASTER_CONFIG = {
+    BASE_URL: 'https://app.ticketmaster.com/discovery/v2',
+    API_KEY: process.env.TICKETMASTER_API_KEY
+};
