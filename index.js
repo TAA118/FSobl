@@ -8,7 +8,7 @@ import { logMiddleware } from './src/middlewares/logger.middleware.js';
 import { authMiddleware } from './src/middlewares/auth.middleware.js';
 import { authRouter } from './src/routes/auth.router.v1.js';
 import { conectarBD } from './src/config/db_config.js';
-import { eventbriteRouter } from './src/routes/eventbrite.router.js';
+import { ticketmasterRouter } from './src/routes/ticketmaster.router.js';
 
 const app = express();
 
@@ -19,7 +19,7 @@ app.use(logMiddleware)
 //Rutas publicas
 app.use("/", pingRouter)
 app.use("/v1", authRouter)
-app.use("/v1", eventbriteRouter)
+app.use("/v1", ticketmasterRouter)
 
 //Rutas privadas
 app.use(authMiddleware)
