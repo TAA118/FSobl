@@ -3,5 +3,5 @@ import * as ticketmasterController from '../controllers/ticketmaster.controller.
 
 export const ticketmasterRouter = express.Router();
 
-// Ruta pública para obtener eventos por ciudad
+// Ruta - requiere autenticación (via authMiddleware en index.js)
 ticketmasterRouter.get('/ciudad/:ciudad', ticketmasterController.obtenerEventosPorCiudad);

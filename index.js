@@ -19,13 +19,13 @@ app.use(logMiddleware)
 //Rutas publicas
 app.use("/", pingRouter)
 app.use("/v1", authRouter)
-app.use("/v1", ticketmasterRouter)
 
 //Rutas privadas
 app.use(authMiddleware)
 app.use("/v1", librosRouterV1)
 app.use("/v1", criticasRouterV1)
 app.use("/v1", generosRouterV1)
+app.use("/v1", ticketmasterRouter)
 
 //conectate con la base de datos
 conectarBD();
