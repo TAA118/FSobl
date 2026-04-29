@@ -5,12 +5,6 @@ const headers = {
     'Content-Type': 'application/json'
 };
 
-
-
-
-
-
-
 export const obtenerEventosPorCiudad = async (ciudad) => {
     try {
         const hoy = new Date();
@@ -18,7 +12,8 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
         const fin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
 
         const params = new URLSearchParams({
-            'q': ciudad,
+            'location.address': ciudad,
+            'expand': 'venue', 
             'sort_by': 'date',
             'start_date.range_start': inicio.toISOString(),
             'start_date.range_end': fin.toISOString()
@@ -28,10 +23,10 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
             `${EVENTBRITE_CONFIG.BASE_URL}/events/search/?${params.toString()}`,
             { headers }
         );
-        
+
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const data = await response.json();
-        
+
         const eventos = data.events?.map(event => ({
             id: event.id,
             nombre: event.name?.text,
@@ -42,13 +37,14 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
             imagen: event.logo?.url,
             ciudad: event.venue?.address?.city || ciudad
         })) || [];
-        
+
         return {
             ciudad,
             mes: hoy.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }),
             cantidad: eventos.length,
             eventos
         };
+
     } catch (error) {
         throw new Error(`Error buscando eventos en ${ciudad}: ${error.message}`);
     }
