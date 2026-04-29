@@ -8,15 +8,10 @@ const headers = {
 export const obtenerEventosPorCiudad = async (ciudad) => {
     try {
         const hoy = new Date();
-        const inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
-        const fin = new Date(hoy.getFullYear(), hoy.getMonth() + 1, 0);
 
         const params = new URLSearchParams({
-            'location.address': ciudad,
-            'expand': 'venue', 
-            'sort_by': 'date',
-            'start_date.range_start': inicio.toISOString(),
-            'start_date.range_end': fin.toISOString()
+            'q': ciudad,
+            'sort_by': 'date'
         });
 
         const response = await fetch(
