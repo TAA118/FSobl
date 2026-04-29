@@ -39,5 +39,4 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
         throw new Error(`Error buscando eventos en ${ciudad}: ${error.message}`);
     }
 };
-};
 
