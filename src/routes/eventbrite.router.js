@@ -3,7 +3,5 @@ import * as eventbriteController from '../controllers/eventbrite.controller.js';
 
 export const eventbriteRouter = express.Router();
 
-// Rutas públicas
-eventbriteRouter.get('/eventos', eventbriteController.obtenerEventos);
-eventbriteRouter.get('/eventos/:id', eventbriteController.obtenerEventoPorId);
+// Ruta pública para obtener eventos por ciudad
 eventbriteRouter.get('/ciudad/:ciudad', eventbriteController.obtenerEventosPorCiudad);
