@@ -130,5 +130,6 @@ export {
     crearLibro,
     modificarLibroPorId,
     eliminarLibroPorId,
-    generarSinopsisPorGemini
+    generarSinopsisPorGemini,
+    subirImagen
 };
