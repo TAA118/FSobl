@@ -45,7 +45,12 @@ const crearCritica = async (req, res) => {
         const nuevaCritica = await criticasService.crearCritica(req.body, req.idUsu);
         res.status(201).json(criticaDTO(nuevaCritica));
     } catch (e) {
-        res.status(500).json({ message: e.message || "error al crear la crítica" });
+        // Manejar error de clave duplicada E11000 de MongoDB
+        if (e.code === 11000) {
+            res.status(409).json({ message: "Ya existe una crítica para este libro" });
+        } else {
+            res.status(e.code || 500).json({ message: e.message });
+        }
     }
 };
 
@@ -57,7 +62,11 @@ const modificarCritica = async (req, res) => {
         const criticaModificada = await criticasService.modificarCriticaPorId(idCritica, body, req.idUsu);
         res.status(200).json(criticaDTO(criticaModificada));
     } catch (e) {
-        res.status(e.code || 500).json({ message: e.message });
+        if (e.code === 11000) {
+            res.status(409).json({ message: "Ya existe una crítica para este libro" });
+        } else {
+            res.status(e.code || 500).json({ message: e.message });
+        }
     }
 };
 

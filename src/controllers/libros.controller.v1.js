@@ -54,7 +54,11 @@ const modificarLibro = async (req, res) => {
         
         res.status(200).json(libroDTO(libroModificado));
     } catch (e) {
-        res.status(e.code || 500).json({ message: e.message });
+        if (e.code === 11000) {
+            res.status(409).json({ message: "El título ya está registrado" });
+        } else {
+            res.status(e.code || 500).json({ message: e.message });
+        }
     }
 };
 
@@ -85,7 +89,10 @@ const subirImagen = async (req, res) => {
         const result = await librosService.subirImagen(idLibro, img);
         return res.status(200).json({ message: "Imagen subida correctamente", url: result });
     } catch (e) {
-        return res.status(e.code || 500).json({ message: e.message || "Error al subir la imagen" });
+        if (e.message.includes("not found")) {
+            return res.status(404).json({ message: "El libro no existe" });
+        }
+        return res.status(500).json({ message: "Error al subir la imagen. Intenta nuevamente" });
     }
 };
 

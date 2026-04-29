@@ -18,7 +18,13 @@ const registrar = async (req, res) => {
         const usuarioNuevo = await registrarUsuario(req.body);
         res.status(201).json(usuarioNuevo);
     } catch (e) {
-        res.status(401).json({ message: e.message });
+        if (e.code === 11000) {
+            const campo = Object.keys(e.keyPattern)[0];
+            const mensaje = `El ${campo} ya está registrado`;
+            res.status(409).json({ message: mensaje });
+        } else {
+            res.status(401).json({ message: e.message });
+        }
     }
 };
 
@@ -27,7 +33,8 @@ const cambiarPlan = async (req, res) => {
         const usuarioActualizado = await actualizarPlanCliente(req.idUsu, req.body.plan);
         res.status(200).json(usuarioDto(usuarioActualizado));
     } catch (e) {
-        res.status(400).json({ message: e.message });
+        const mensaje = e.message || "Error al cambiar el plan";
+        res.status(400).json({ message: mensaje });
     }
 };
 
