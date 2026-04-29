@@ -1,4 +1,5 @@
 import * as criticasService from "../services/criticas.service.v1.js";
+import { criticaDTO } from "../dtos/critica.dto.js";
 
 const obtenerCriticasUsuario = async (req, res) => {
     try {
@@ -6,6 +7,7 @@ const obtenerCriticasUsuario = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         
         const resultado = await criticasService.obtenerCriticasUsuario(req.idUsu, page, limit);
+        resultado.criticas = resultado.criticas.map(criticaDTO);
         res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
@@ -19,6 +21,7 @@ const obtenerCriticasLibro = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         
         const resultado = await criticasService.obtenerCriticasLibro(idLibro, page, limit);
+        resultado.criticas = resultado.criticas.map(criticaDTO);
         res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
@@ -31,7 +34,7 @@ const obtenerCriticaPorId = async (req, res) => {
 
     try {
         const critica = await criticasService.obtenerCriticaPorId(idCritica, idUsuario);
-        res.status(200).json(critica);
+        res.status(200).json(criticaDTO(critica));
     } catch (e) {
         res.status(e.code || 500).json({ message: e.message });
     }
@@ -40,7 +43,7 @@ const obtenerCriticaPorId = async (req, res) => {
 const crearCritica = async (req, res) => {
     try {
         const nuevaCritica = await criticasService.crearCritica(req.body, req.idUsu);
-        res.status(201).json(nuevaCritica);
+        res.status(201).json(criticaDTO(nuevaCritica));
     } catch (e) {
         res.status(500).json({ message: e.message || "error al crear la crítica" });
     }
@@ -52,7 +55,7 @@ const modificarCritica = async (req, res) => {
 
     try {
         const criticaModificada = await criticasService.modificarCriticaPorId(idCritica, body, req.idUsu);
-        res.status(200).json(criticaModificada);
+        res.status(200).json(criticaDTO(criticaModificada));
     } catch (e) {
         res.status(e.code || 500).json({ message: e.message });
     }

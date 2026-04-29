@@ -1,4 +1,5 @@
 import * as librosService from "../services/libros.service.v1.js";
+import { libroDTO } from "../dtos/libro.dto.js";
 
 const obtenerLibros = async (req, res) => {
     try {
@@ -6,6 +7,7 @@ const obtenerLibros = async (req, res) => {
         const limit = parseInt(req.query.limit) || 10;
         
         const resultado = await librosService.obtenerLibros(page, limit);
+        resultado.libros = resultado.libros.map(libroDTO);
         res.status(200).json(resultado);
     } catch (e) {
         res.status(500).json({ message: e.message });
@@ -17,7 +19,7 @@ const obtenerLibroPorId = async (req, res) => {
 
     try {
         const libro = await librosService.obtenerLibroPorId(idLibro);
-        res.status(200).json(libro);
+        res.status(200).json(libroDTO(libro));
     } catch (e) {
         res.status(e.code || 500).json({ message: e.message });
     }
@@ -26,7 +28,7 @@ const obtenerLibroPorId = async (req, res) => {
 const crearLibro = async (req, res) => {
     try {
         const nuevoLibro = await librosService.crearLibro(req.body);
-        res.status(201).json(nuevoLibro);
+        res.status(201).json(libroDTO(nuevoLibro));
     } catch (e) {
         res.status(500).json({ message: e.message || "error al crear el libro" });
     }
@@ -38,7 +40,7 @@ const modificarLibro = async (req, res) => {
 
     try {
         const libroModificado = await librosService.modificarLibroPorId(idLibro, body);
-        res.status(200).json(libroModificado);
+        res.status(200).json(libroDTO(libroModificado));
     } catch (e) {
         res.status(e.code || 500).json({ message: e.message });
     }
