@@ -7,16 +7,14 @@ const headers = {
 
 export const obtenerEventosPorCiudad = async (ciudad) => {
     try {
-        const hoy = new Date();
-
         const params = new URLSearchParams({
             'q': ciudad,
-            'sort_by': 'date'
+            'sort_by': 'date',
+            'token': EVENTBRITE_CONFIG.API_KEY
         });
 
         const response = await fetch(
-            `${EVENTBRITE_CONFIG.BASE_URL}/events/search/?${params.toString()}`,
-            { headers }
+            `${EVENTBRITE_CONFIG.BASE_URL}/events/search/?${params.toString()}`
         );
 
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -33,6 +31,7 @@ export const obtenerEventosPorCiudad = async (ciudad) => {
             ciudad: event.venue?.address?.city || ciudad
         })) || [];
 
+        const hoy = new Date();
         return {
             ciudad,
             mes: hoy.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }),
