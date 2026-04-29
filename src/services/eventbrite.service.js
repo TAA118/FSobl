@@ -8,6 +8,7 @@ const headers = {
 export const obtenerEventos = async () => {
     try {
         const params = new URLSearchParams({
+            'q': '*',
             'sort_by': 'date',
             'start_date.keyword': 'this_month'
         });
