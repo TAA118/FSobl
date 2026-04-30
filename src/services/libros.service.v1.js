@@ -91,6 +91,7 @@ const crearLibro = async ({ titulo, genero, autor, fecha, imagenURL, sinopsis })
 };
 
 const modificarLibroPorId = async (idLibro, body) => {
+    try {
     const libroModificado = await Libro.findOneAndUpdate(
         { _id: idLibro },
         body,
@@ -102,6 +103,11 @@ const modificarLibroPorId = async (idLibro, body) => {
     }
 
     throw new LibroNoEncontradoError();
+} catch (e) {
+    if (e.message.includes("Cast to ObjectId failed")) {
+        throw new InvalidIdError("libro");
+    }
+    throw e;
 };
 
 const eliminarLibroPorId = async (idLibro) => {
