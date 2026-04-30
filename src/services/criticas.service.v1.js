@@ -86,23 +86,37 @@ const crearCritica = async ({ puntaje, comentario, idLibro }, idUsuario) => {
 };
 
 const modificarCriticaPorId = async (idCritica, body, idUsuario) => {
-    const criticaModificada = await Critica.findOneAndUpdate(
-        { _id: idCritica, idUsuario: idUsuario },
-        body,
-        { returnDocument: "after", runValidators: true }
-    ).populate("idLibro");
+    try {
+        const criticaModificada = await Critica.findOneAndUpdate(
+            { _id: idCritica, idUsuario: idUsuario },
+            body,
+            { returnDocument: "after", runValidators: true }
+        ).populate("idLibro");
 
-    if (criticaModificada) {
-        return criticaModificada;
+        if (criticaModificada) {
+            return criticaModificada;
+        }
+
+        throw new CriticaNoEncontradaError();
+    } catch (e) {
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new InvalidIdError("crítica");
+        }
+        throw e;
     }
-
-    throw new CriticaNoEncontradaError();
 };
 
 const eliminarCriticaPorId = async (idCritica, idUsuario) => {
-    const critica = await Critica.findOneAndDelete({ _id: idCritica, idUsuario: idUsuario });
-    if (!critica) {
-        throw new CriticaNoEncontradaError();
+    try {
+        const critica = await Critica.findOneAndDelete({ _id: idCritica, idUsuario: idUsuario });
+        if (!critica) {
+            throw new CriticaNoEncontradaError();
+        }
+    } catch (e) {
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new InvalidIdError("crítica");
+        }
+        throw e;
     }
 };
 
