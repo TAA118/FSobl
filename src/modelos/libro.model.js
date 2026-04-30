@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const libroSchema = new mongoose.Schema({
-    titulo: { type: String, required: true },
+    titulo: { type: String, required: true, unique: true },
     genero: { type: String, required: true },
     autor: { type: String, required: true },
     fecha: { type: Date, required: true },

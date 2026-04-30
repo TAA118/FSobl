@@ -51,6 +51,12 @@ const obtenerLibroPorId = async (idLibro) => {
 };
 
 const crearLibro = async ({ titulo, genero, autor, fecha, imagenURL, sinopsis }) => {
+    // Validar que no exista un libro con el mismo título
+    const libroExistente = await Libro.findOne({ titulo: titulo });
+    if (libroExistente) {
+        throw new Error("Ya existe un libro con este título");
+    }
+    
     let sinopsisLibro = sinopsis;
     
     if (!sinopsisLibro) {
