@@ -13,7 +13,6 @@ const obtenerGeneros = async () => {
 };
 
 const crearGenero = async ({ nombre }) => {
-    // Validar que no exista un género con el mismo nombre
     const generoExistente = await Genero.findOne({ nombre: nombre });
     if (generoExistente) {
         throw new GeneroDuplicadoError(nombre);

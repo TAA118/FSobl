@@ -62,7 +62,6 @@ const crearCritica = async ({ puntaje, comentario, idLibro }, idUsuario) => {
         throw new ValidationError("Usuario no encontrado");
     }
 
-    // Validar que el usuario no ya tenga una crítica para este libro
     const criticaExistente = await Critica.findOne({ idUsuario: idUsuario, idLibro: idLibro });
     if (criticaExistente) {
         throw new ValidationError("Ya has hecho una crítica para este libro");

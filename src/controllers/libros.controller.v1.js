@@ -42,13 +42,11 @@ const modificarLibro = async (req, res) => {
     try {
         let libroModificado = await librosService.modificarLibroPorId(idLibro, body);
         
-        // Si se proporciona una imagen, subirla
         if (img) {
             if (!img.mimetype.startsWith("image/")) {
                 return res.status(400).json({ message: "El archivo proporcionado no es una imagen" });
             }
             await librosService.subirImagen(idLibro, img);
-            // Obtener el libro actualizado con la imagen
             libroModificado = await librosService.obtenerLibroPorId(idLibro);
         }
         
