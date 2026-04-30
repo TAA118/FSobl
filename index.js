@@ -27,6 +27,7 @@ app.use("/v1", criticasRouterV1)
 app.use("/v1", generosRouterV1)
 app.use("/v1", ticketmasterRouter)
 
+
 //conectate con la base de datos
 conectarBD();
 
