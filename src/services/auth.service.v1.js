@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
 import { Usuario } from "../modelos/user.model.js"
 import { usuarioDto } from "../dtos/usuario.dto.js"
+import { ValidationError } from "../errors/ValidationError.js"
+import { UsuarioDuplicadoError } from "../errors/UsuarioDuplicadoError.js"
 
 const doLogin = async ({ usuario, pass }) => {
     const u = await Usuario.findOne({ nombreUsuario: usuario }) // query de busqueda
@@ -17,7 +19,7 @@ const doLogin = async ({ usuario, pass }) => {
         }
     }
 
-    throw new Error("no autorizado");
+    throw new ValidationError("No autorizado");
 }
 
 const registrarUsuario = async ({ nombreUsuario, nombre, apellido, contrasena, mail, rol, plan }) => {
@@ -49,11 +51,11 @@ const actualizarPlanCliente = async (idUsu, nuevoPlan = "premium") => {
 
     const usuario = await Usuario.findById(idUsu);
     if (!usuario) {
-        throw new Error("Usuario no encontrado");
+        throw new ValidationError("Usuario no encontrado");
     }
 
     if (usuario.rol !== "cliente") {
-        throw new Error("Solo usuarios con rol cliente pueden cambiar de plan");
+        throw new ValidationError("Solo usuarios con rol cliente pueden cambiar de plan");
     }
 
     if (usuario.plan === "premium") {
@@ -66,7 +68,7 @@ const actualizarPlanCliente = async (idUsu, nuevoPlan = "premium") => {
         return usuario;
     }
 
-    throw new Error("Solo se puede actualizar de plan plus a premium");
+    throw new ValidationError("Solo se puede actualizar de plan plus a premium");
 }
 
 export { doLogin, registrarUsuario, actualizarPlanCliente }

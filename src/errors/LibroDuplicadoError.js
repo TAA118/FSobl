@@ -1,6 +1,6 @@
 class LibroDuplicadoError extends Error {
-    constructor(isbn) {
-        super(`El libro con ISBN ${isbn} ya existe`);
+    constructor(titulo) {
+        super(`El libro "${titulo}" ya existe`);
         this.code = 409;
     }
 }

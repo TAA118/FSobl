@@ -1,6 +1,7 @@
 import { Critica } from "../modelos/critica.model.js";
 import { CriticaNoEncontradaError } from "../errors/CriticaNoEncontradaError.js";
 import { ValidationError } from "../errors/ValidationError.js";
+import { InvalidIdError } from "../errors/InvalidIdError.js";
 import { Usuario } from "../modelos/user.model.js";
 
 const obtenerCriticasUsuario = async (idUsuario, page = 1, limit = 10) => {
@@ -21,7 +22,7 @@ const obtenerCriticasUsuario = async (idUsuario, page = 1, limit = 10) => {
         };
     } catch (e) {
         console.log("error al obtener críticas del usuario", e);
-        throw new Error("error obteniendo las críticas del usuario");
+        throw new ValidationError("Error obteniendo las críticas del usuario");
     }
 };
 
@@ -36,16 +37,23 @@ const obtenerCriticasLibro = async (idLibro, page = 1, limit = 10) => {
         return { criticas, total, page, limit, totalPages: Math.ceil(total / limit) };
     } catch (e) {
         console.log("error al obtener críticas del libro", e);
-        throw new Error("error obteniendo las críticas del libro");
+        throw new ValidationError("Error obteniendo las críticas del libro");
     }
 };
 
 const obtenerCriticaPorId = async (idCritica, idUsuario) => {
-    const critica = await Critica.findOne({ _id: idCritica, idUsuario: idUsuario }).populate("idLibro");
-    if (critica) {
-        return critica;
+    try {
+        const critica = await Critica.findOne({ _id: idCritica, idUsuario: idUsuario }).populate("idLibro");
+        if (critica) {
+            return critica;
+        }
+        throw new CriticaNoEncontradaError();
+    } catch (e) {
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new InvalidIdError("crítica");
+        }
+        throw e;
     }
-    throw new CriticaNoEncontradaError();
 };
 
 const crearCritica = async ({ puntaje, comentario, idLibro }, idUsuario) => {

@@ -18,13 +18,7 @@ const registrar = async (req, res) => {
         const usuarioNuevo = await registrarUsuario(req.body);
         res.status(201).json(usuarioNuevo);
     } catch (e) {
-        if (e.code === 11000) {
-            const campo = Object.keys(e.keyPattern)[0];
-            const mensaje = `El ${campo} ya está registrado`;
-            res.status(409).json({ message: mensaje });
-        } else {
-            res.status(400).json({ message: e.message });
-        }
+        res.status(e.code || 400).json({ message: e.message });
     }
 };
 

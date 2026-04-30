@@ -1,5 +1,8 @@
 import { Libro } from "../modelos/libro.model.js";
 import { LibroNoEncontradoError } from "../errors/LibroNoEncontradoError.js";
+import { LibroDuplicadoError } from "../errors/LibroDuplicadoError.js";
+import { ValidationError } from "../errors/ValidationError.js";
+import { InvalidIdError } from "../errors/InvalidIdError.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import cloudinary from "cloudinary";
 
@@ -20,7 +23,7 @@ const obtenerLibros = async (page = 1, limit = 10) => {
         };
     } catch (e) {
         console.log("error al obtener libros", e);
-        throw e;
+        throw new ValidationError("Error al obtener libros");
     }
 };
 
@@ -38,23 +41,30 @@ const generarSinopsisPorGemini = async (titulo, autor, genero) => {
         return sinopsis;
     } catch (e) {
         console.log("error al generar sinopsis con Gemini", e);
-        throw new Error("error generando la sinopsis con Gemini");
+        throw new ValidationError("Error generando la sinopsis con Gemini");
     }
 };
 
 const obtenerLibroPorId = async (idLibro) => {
-    const libro = await Libro.findOne({ _id: idLibro });
-    if (libro) {
-        return libro;
+    try {
+        const libro = await Libro.findOne({ _id: idLibro });
+        if (libro) {
+            return libro;
+        }
+        throw new LibroNoEncontradoError();
+    } catch (e) {
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new InvalidIdError("libro");
+        }
+        throw e;
     }
-    throw new LibroNoEncontradoError();
 };
 
 const crearLibro = async ({ titulo, genero, autor, fecha, imagenURL, sinopsis }) => {
     // Validar que no exista un libro con el mismo título
     const libroExistente = await Libro.findOne({ titulo: titulo });
     if (libroExistente) {
-        throw new Error("Ya existe un libro con este título");
+        throw new LibroDuplicadoError(titulo);
     }
     
     let sinopsisLibro = sinopsis;
@@ -123,7 +133,7 @@ const subirImagen = async (idLibro, img) => {
 
         } catch (e) {
         console.log("error al subir imagen a Cloudinary", e);
-        throw new Error("error al subir imagen");
+        throw new ValidationError("Error al subir imagen");
     }
 
 };
