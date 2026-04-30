@@ -112,10 +112,17 @@ const modificarLibroPorId = async (idLibro, body) => {
 }
 
 const eliminarLibroPorId = async (idLibro) => {
+    try {
     const libro = await Libro.findOneAndDelete({ _id: idLibro });
     if (!libro) {
         throw new LibroNoEncontradoError();
     }
+} catch (e) {
+    if (e.message.includes("Cast to ObjectId failed")) {
+        throw new InvalidIdError("libro");
+    }
+    throw e;
+}
 };
 
 cloudinary.config({
