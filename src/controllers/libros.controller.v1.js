@@ -30,7 +30,13 @@ const crearLibro = async (req, res) => {
         const nuevoLibro = await librosService.crearLibro(req.body);
         res.status(201).json(libroDTO(nuevoLibro));
     } catch (e) {
-        res.status(500).json({ message: e.message || "error al crear el libro" });
+        if (e.code === 11000) {
+            res.status(409).json({ message: "El título ya existe" });
+        } else if (e.message.includes("Ya existe")) {
+            res.status(409).json({ message: e.message });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 
@@ -56,8 +62,10 @@ const modificarLibro = async (req, res) => {
     } catch (e) {
         if (e.code === 11000) {
             res.status(409).json({ message: "El título ya está registrado" });
+        } else if (e.message.includes("no encontrado")) {
+            res.status(404).json({ message: e.message });
         } else {
-            res.status(e.code || 500).json({ message: e.message });
+            res.status(400).json({ message: e.message });
         }
     }
 };
@@ -69,7 +77,11 @@ const eliminarLibro = async (req, res) => {
         await librosService.eliminarLibroPorId(idLibro);
         res.status(204).send();
     } catch (e) {
-        res.status(e.code || 500).json({ message: e.message });
+        if (e.message.includes("no encontrado")) {
+            res.status(404).json({ message: e.message });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 

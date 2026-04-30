@@ -23,7 +23,7 @@ const registrar = async (req, res) => {
             const mensaje = `El ${campo} ya está registrado`;
             res.status(409).json({ message: mensaje });
         } else {
-            res.status(401).json({ message: e.message });
+            res.status(400).json({ message: e.message });
         }
     }
 };

@@ -15,7 +15,13 @@ const crearGenero = async (req, res) => {
         const generoCreado = await generosService.crearGenero(req.body);
         res.status(201).json(generoDTO(generoCreado));
     } catch (e) {
-        res.status(400).json({ message: e.message });
+        if (e.message.includes("Ya existe")) {
+            res.status(409).json({ message: e.message });
+        } else if (e.code === 11000) {
+            res.status(409).json({ message: "El género ya existe" });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 
@@ -25,7 +31,15 @@ const modificarGenero = async (req, res) => {
         const generoModificado = await generosService.modificarGeneroPorId(idGenero, req.body);
         res.status(200).json(generoDTO(generoModificado));
     } catch (e) {
-        res.status(400).json({ message: e.message });
+        if (e.message.includes("no encontrado")) {
+            res.status(404).json({ message: e.message });
+        } else if (e.message.includes("Ya existe")) {
+            res.status(409).json({ message: e.message });
+        } else if (e.code === 11000) {
+            res.status(409).json({ message: "El género ya existe" });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 
@@ -35,7 +49,11 @@ const eliminarGenero = async (req, res) => {
         await generosService.eliminarGeneroPorId(idGenero);
         res.status(204).send();
     } catch (e) {
-        res.status(400).json({ message: e.message });
+        if (e.message.includes("no encontrado")) {
+            res.status(404).json({ message: e.message });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 

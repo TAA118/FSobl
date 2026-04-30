@@ -36,7 +36,11 @@ const obtenerCriticaPorId = async (req, res) => {
         const critica = await criticasService.obtenerCriticaPorId(idCritica, idUsuario);
         res.status(200).json(criticaDTO(critica));
     } catch (e) {
-        res.status(e.code || 500).json({ message: e.message });
+        if (e.message.includes("no encontrada")) {
+            res.status(404).json({ message: e.message });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 
@@ -45,11 +49,12 @@ const crearCritica = async (req, res) => {
         const nuevaCritica = await criticasService.crearCritica(req.body, req.idUsu);
         res.status(201).json(criticaDTO(nuevaCritica));
     } catch (e) {
-        // Manejar error de clave duplicada E11000 de MongoDB
         if (e.code === 11000) {
             res.status(409).json({ message: "Ya existe una crítica para este libro" });
+        } else if (e.message.includes("Ya has hecho")) {
+            res.status(409).json({ message: e.message });
         } else {
-            res.status(e.code || 500).json({ message: e.message });
+            res.status(400).json({ message: e.message });
         }
     }
 };
@@ -64,8 +69,10 @@ const modificarCritica = async (req, res) => {
     } catch (e) {
         if (e.code === 11000) {
             res.status(409).json({ message: "Ya existe una crítica para este libro" });
+        } else if (e.message.includes("no encontrada")) {
+            res.status(404).json({ message: e.message });
         } else {
-            res.status(e.code || 500).json({ message: e.message });
+            res.status(400).json({ message: e.message });
         }
     }
 };
@@ -77,7 +84,11 @@ const eliminarCritica = async (req, res) => {
         await criticasService.eliminarCriticaPorId(idCritica, req.idUsu);
         res.status(204).send();
     } catch (e) {
-        res.status(e.code || 500).json({ message: e.message });
+        if (e.message.includes("no encontrada")) {
+            res.status(404).json({ message: e.message });
+        } else {
+            res.status(400).json({ message: e.message });
+        }
     }
 };
 
