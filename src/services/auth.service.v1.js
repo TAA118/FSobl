@@ -6,7 +6,7 @@ import { ValidationError } from "../errors/ValidationError.js"
 import { UsuarioDuplicadoError } from "../errors/UsuarioDuplicadoError.js"
 
 const doLogin = async ({ usuario, pass }) => {
-    const u = await Usuario.findOne({ nombreUsuario: usuario }) // query de busqueda
+    const u = await Usuario.findOne({ nombreUsuario: usuario }) 
     if (u) {
         const esValida = await bcrypt.compare(pass, u.contrasena)
         if (esValida) {
@@ -71,4 +71,9 @@ const actualizarPlanCliente = async (idUsu, nuevoPlan = "premium") => {
     throw new ValidationError("Solo se puede actualizar de plan plus a premium");
 }
 
-export { doLogin, registrarUsuario, actualizarPlanCliente }
+const obtenerUsuarios = async () => {
+    const usuarios = await Usuario.find().select("-contrasena");
+    return usuarios.map(u => usuarioDto(u));
+}
+
+export { doLogin, registrarUsuario, actualizarPlanCliente, obtenerUsuarios }

@@ -1,6 +1,6 @@
 //controlador de inicio de sesion
 
-import { doLogin, registrarUsuario, actualizarPlanCliente } from "../services/auth.service.v1.js";
+import { doLogin, registrarUsuario, actualizarPlanCliente, obtenerUsuarios } from "../services/auth.service.v1.js";
 import { usuarioDto } from "../dtos/usuario.dto.js";
 
 const login = async (req, res) => {
@@ -40,4 +40,13 @@ const logout = async (req, res) => {
     }
 };
 
-export { login, registrar, cambiarPlan, logout }
+const getUsuarios = async (req, res) => {
+    try {
+        const usuarios = await obtenerUsuarios();
+        res.status(200).json(usuarios);
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
+};
+
+export { login, registrar, cambiarPlan, logout, getUsuarios }
