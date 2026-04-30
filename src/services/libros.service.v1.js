@@ -109,6 +109,7 @@ const modificarLibroPorId = async (idLibro, body) => {
     }
     throw e;
 };
+}
 
 const eliminarLibroPorId = async (idLibro) => {
     const libro = await Libro.findOneAndDelete({ _id: idLibro });
@@ -155,3 +156,4 @@ export {
     generarSinopsisPorGemini,
     subirImagen
 };
+

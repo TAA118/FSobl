@@ -8,8 +8,6 @@ const authMiddleware = (req, res, next) => {
         return;
     }
 
-    //VERIFICAR EL TOKEN JWT ENVIADO
-    //VALIDARLO
     try {
         const tokenUsu = jwt.verify(token, process.env.JWT_SECRET_KEY)
         req.idUsu = tokenUsu.idUsu

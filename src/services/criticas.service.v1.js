@@ -107,16 +107,9 @@ const modificarCriticaPorId = async (idCritica, body, idUsuario) => {
 };
 
 const eliminarCriticaPorId = async (idCritica, idUsuario) => {
-    try {
-        const critica = await Critica.findOneAndDelete({ _id: idCritica, idUsuario: idUsuario });
-        if (!critica) {
-            throw new CriticaNoEncontradaError();
-        }
-    } catch (e) {
-        if (e.message.includes("Cast to ObjectId failed")) {
-            throw new InvalidIdError("crítica");
-        }
-        throw e;
+    const critica = await Critica.findOneAndDelete({ _id: idCritica, idUsuario: idUsuario });
+    if (!critica) {
+        throw new CriticaNoEncontradaError();
     }
 };
 

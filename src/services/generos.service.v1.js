@@ -45,6 +45,9 @@ const modificarGeneroPorId = async (idGenero, { nombre }) => {
         return generoModificado;
     } catch (e) {
         console.log("error al modificar género", e);
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new ValidationError("ID de género inválido");
+        }
         if (e.code === 11000) {
             throw new GeneroDuplicadoError(nombre);
         }
@@ -61,6 +64,9 @@ const eliminarGeneroPorId = async (idGenero) => {
         return generoEliminado;
     } catch (e) {
         console.log("error al eliminar género", e);
+        if (e.message.includes("Cast to ObjectId failed")) {
+            throw new ValidationError("ID de género inválido");
+        }
         throw e;
     }
 };
